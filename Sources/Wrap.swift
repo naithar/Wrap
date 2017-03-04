@@ -116,6 +116,9 @@ extension Value {
     
     public var int: Int? {
         switch self.type {
+        case .data(let value):
+            guard let string = String(data: value, encoding: .utf8) else { return nil }
+            return Int(string)
         case .int(let value):
             return value
         case .double(let value):
@@ -132,6 +135,9 @@ extension Value {
     
     public var double: Double? {
         switch self.type {
+        case .data(let value):
+            guard let string = String(data: value, encoding: .utf8) else { return nil }
+            return Double(string)
         case .int(let value):
             return Double(value)
         case .double(let value):
@@ -148,6 +154,8 @@ extension Value {
     
     public var string: String? {
         switch self.type {
+        case .data(let value):
+            return String(data: value, encoding: .utf8)
         case .bool(let value):
             return value ? "true" : "false"
         case .int(let value):
