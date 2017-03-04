@@ -18,7 +18,6 @@ public struct Value: Wrappable {
     
     public static let null = Value()
     
-    fileprivate var _object: Any = NSNull()
     fileprivate var type: Type = .unknown(NSNull())
 
     private init() {}
@@ -32,20 +31,27 @@ extension Value {
     
     public fileprivate(set) var object: Any {
         get {
-            return self._object
+            switch self.type {
+            case .string(let string):
+                return string
+            case .bool(let bool):
+                return bool
+            case .int(let int):
+                return int
+            case .double(let double):
+                return double
+            case .array(let array):
+                return array
+            case .dictionary(let dictionary):
+                return dictionary
+            case .unknown(let value):
+                return value
+            }
         }
-        set {
-            self._object = newValue
-            
-            switch self._object {
+        set(object) {
+            switch object {
             case let string as String:
-                if let int = Int(string) {
-                    self.type = .int(int)
-                } else if let double = Double(string) {
-                    self.type = .double(double)
-                } else {
-                    self.type = .string(string)
-                }
+                self.type = .string(string)
             case let int as Int:
                 self.type = .int(int)
             case let double as Double:
@@ -91,6 +97,8 @@ extension Value {
             return value
         case .double(let value):
             return Int(value)
+        case .string(let value):
+            return Int(value)
         case .unknown(let value as WrapConvertible):
             return value.int
         default:
@@ -105,6 +113,8 @@ extension Value {
             return Double(value)
         case .double(let value):
             return value
+        case .string(let value):
+            return Double(value)
         case .unknown(let value as WrapConvertible):
             return value.double
         default:
@@ -154,29 +164,82 @@ extension Value {
         }
     }
     
-    
+    public func `as`<T>(_ type: T.Type) -> T? {
+        switch self.type {
+        case .unknown(let value as WrapConvertible):
+            return value.as(T.self)
+        default:
+            return self.object as? T
+        }
+    }
 }
 
 extension Value {
     
     public var isBool: Bool {
-        return self.bool != nil
+        switch self.type {
+        case .bool:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isBool
+        default:
+            return false
+        }
     }
+    
     public var isInt: Bool {
-        return self.int != nil
+        switch self.type {
+        case .int:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isInt
+        default:
+            return false
+        }
     }
+    
     public var isDouble: Bool {
-        return self.double != nil
+        switch self.type {
+        case .double:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isDouble
+        default:
+            return false
+        }
     }
+    
     public var isString: Bool {
-        return self.string != nil
+        switch self.type {
+        case .string:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isString
+        default:
+            return false
+        }
     }
+    
     public var isArray: Bool {
-        return self.array != nil
+        switch self.type {
+        case .array:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isArray
+        default:
+            return false
+        }
     }
     
     public var isDictionary: Bool {
-        return self.dictionary != nil
+        switch self.type {
+        case .dictionary:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isDictionary
+        default:
+            return false
+        }
     }
     
     public var isNull: Bool {
@@ -187,6 +250,15 @@ extension Value {
             return value.isNull
         default:
             return false
+        }
+    }
+    
+    public func `is`<T>(_ type: T.Type) -> Bool {
+        switch self.type {
+        case .unknown(let value as WrapCheckable):
+            return value.is(T.self)
+        default:
+            return (self.object as? T) != nil
         }
     }
 }
@@ -201,13 +273,8 @@ extension Value {
         case (.dictionary(let dictionary), .key(let key)):
             guard let value = dictionary[key] else { return .null }
             return Value(value)
-        case (.unknown(let value as WrapConvertible), .index(let index)):
-            guard let array = value.array,
-                index >= 0 && index < array.count else { return .null }
-            return Value(array[index])
-        case (.unknown(let value as WrapConvertible), .key(let key)):
-            guard let value = value.dictionary?[key] else { return .null }
-            return Value(value)
+        case (.unknown(let value as WrapSubscriptable), _):
+            return Value(value[keys])
         default:
             return .null
         }
