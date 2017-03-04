@@ -23,6 +23,8 @@ public protocol WrapConvertible {
     var array: [Any]? { get }
     
     var dictionary: [AnyHashable : Any]? { get }
+    
+    func `as`<T>(_ type: T.Type) -> T?
 }
 
 public protocol WrapCheckable {
@@ -36,6 +38,8 @@ public protocol WrapCheckable {
     var isArray: Bool { get }
     var isDictionary: Bool { get }
     var isNull: Bool { get }
+    
+    func `is`<T>(_ type: T.Type) -> Bool
 }
 
 extension WrapConvertible {
