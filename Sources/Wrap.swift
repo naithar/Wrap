@@ -1,4 +1,5 @@
 import Foundation
+@_exported import Foundation.NSData
 
 public protocol Wrappable: WrapConvertible, WrapSubscriptable, WrapCheckable {
     
@@ -7,6 +8,7 @@ public protocol Wrappable: WrapConvertible, WrapSubscriptable, WrapCheckable {
 public struct Value: Wrappable {
  
     public enum `Type` {
+        case data(Data)
         case bool(Bool)
         case int(Int)
         case double(Double)
@@ -32,6 +34,8 @@ extension Value {
     public fileprivate(set) var object: Any {
         get {
             switch self.type {
+            case .data(let data):
+                return data
             case .string(let string):
                 return string
             case .bool(let bool):
@@ -50,6 +54,8 @@ extension Value {
         }
         set(object) {
             switch object {
+            case let data as Data:
+                self.type = .data(data)
             case let string as String:
                 self.type = .string(string)
             case let int as Int:
@@ -65,6 +71,23 @@ extension Value {
             default:
                 self.type = .unknown(object)
             }
+        }
+    }
+    
+    public var data: Data? {
+        switch self.type {
+        case .data(let data):
+            return data
+        case .string(let string):
+            return string.data(using: .utf8)
+        case .int(let int):
+            return String(int).data(using: .utf8)
+        case .double(let double):
+            return String(double).data(using: .utf8)
+        case .unknown(let value as WrapConvertible):
+            return value.data
+        default:
+            return nil
         }
     }
     
@@ -175,6 +198,17 @@ extension Value {
 }
 
 extension Value {
+    
+    public var isData: Bool {
+        switch self.type {
+        case .data:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isData
+        default:
+            return false
+        }
+    }
     
     public var isBool: Bool {
         switch self.type {
