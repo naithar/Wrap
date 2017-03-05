@@ -198,7 +198,7 @@ extension Value {
     public func `as`<T>(_ type: T.Type) -> T? {
         switch self.type {
         case .unknown(let value as WrapConvertible):
-            return value.as(T.self)
+            return value.as(T.self) ?? (self.object as? T)
         default:
             return self.object as? T
         }
@@ -299,6 +299,7 @@ extension Value {
         switch self.type {
         case .unknown(let value as WrapCheckable):
             return value.is(T.self)
+                || (self.object as? T) != nil
         default:
             return (self.object as? T) != nil
         }
