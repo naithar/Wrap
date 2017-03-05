@@ -93,9 +93,27 @@ extension Value {
     
     public var bool: Bool? {
         switch self.type {
+        case .data(let data):
+            guard let string = String(data: data, encoding: .utf8) else { return nil }
+            switch string.lowercased() {
+            case "true":
+                return true
+            case "false":
+                return false
+            default:
+                if let int = Int(string) {
+                    return int != 0
+                } else if let double = Double(string) {
+                    return double != 0
+                } else {
+                    return nil
+                }
+            }
         case .bool(let value):
             return value
         case .int(let value):
+            return value != 0
+        case .double(let value):
             return value != 0
         case .string(let value):
             switch value.lowercased() {
