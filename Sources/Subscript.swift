@@ -38,7 +38,7 @@ extension String: WrapKeyProtocol {
 
 public protocol WrapSubscriptable {
     
-    subscript(keys: WrapKeyProtocol) -> Self { get }
+    subscript(key: WrapKeyProtocol) -> Self { get }
 }
 
 extension WrapSubscriptable {

@@ -326,8 +326,8 @@ extension Value {
 
 extension Value {
     
-    public subscript(keys: WrapKeyProtocol) -> Value {
-        switch (self.type, keys.key) {
+    public subscript(key: WrapKeyProtocol) -> Value {
+        switch (self.type, key.key) {
         case (.array(let array), .index(let index)):
             guard index >= 0 && index < array.count else { return .null }
             return Value(array[index])
@@ -335,7 +335,7 @@ extension Value {
             guard let value = dictionary[key] else { return .null }
             return Value(value)
         case (.unknown(let value as WrapSubscriptable), _):
-            return Value(value[keys])
+            return Value(value[key])
         default:
             return .null
         }
