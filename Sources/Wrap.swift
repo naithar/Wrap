@@ -336,6 +336,13 @@ extension Value {
             return Value(value)
         case (.unknown(let value as WrapSubscriptable), _):
             return Value(value[key])
+        case (.unknown(let value as WrapConvertible), .index(let index)):
+            guard let array = value.array,
+                index >= 0 && index < array.count else { return .null }
+            return Value(array[index])
+        case (.unknown(let value as WrapConvertible), .key(let key)):
+            guard let value = value.dictionary?[key] else { return .null }
+            return Value(value)
         default:
             return .null
         }
