@@ -1,5 +1,4 @@
-import Foundation
-@_exported import Foundation.NSData
+@_exported import Foundation
 
 public protocol Wrappable: WrapConvertible, WrapSubscriptable, WrapCheckable {
     
