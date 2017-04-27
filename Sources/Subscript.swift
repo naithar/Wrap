@@ -39,6 +39,7 @@ extension String: WrapKeyProtocol {
 public protocol WrapSubscriptable {
     
     subscript(key: WrapKeyProtocol) -> Self { get }
+    
 }
 
 extension WrapSubscriptable {
@@ -48,5 +49,15 @@ extension WrapSubscriptable {
     }
     public subscript(keys: [WrapKeyProtocol]) -> Self {
         return keys.reduce(self) { $0[$1] }
+    }
+}
+
+internal extension WrapSubscriptable {
+    
+    // A workaround for a bug with `SIL`
+    // that appeared after 3.1.x release
+    //
+    internal func request(key: WrapKeyProtocol) -> Self {
+        return self[key]
     }
 }

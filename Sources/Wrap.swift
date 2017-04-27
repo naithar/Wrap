@@ -5,7 +5,7 @@ public protocol Wrappable: WrapConvertible, WrapSubscriptable, WrapCheckable {
 }
 
 public struct Value: Wrappable {
- 
+    
     public enum `Type` {
         case data(Data)
         case bool(Bool)
@@ -333,8 +333,6 @@ extension Value {
         case (.dictionary(let dictionary), .key(let key)):
             guard let value = dictionary[key] else { return .null }
             return Value(value)
-        case (.unknown(let value as WrapSubscriptable), _):
-            return Value(value[key])
         case (.unknown(let value as WrapConvertible), .index(let index)):
             guard let array = value.array,
                 index >= 0 && index < array.count else { return .null }
@@ -342,6 +340,8 @@ extension Value {
         case (.unknown(let value as WrapConvertible), .key(let key)):
             guard let value = value.dictionary?[key] else { return .null }
             return Value(value)
+        case (.unknown(let value as WrapSubscriptable), _):
+            return Value(value.request(key: key))
         default:
             return .null
         }
