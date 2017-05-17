@@ -6,12 +6,13 @@
 //
 //
 
-import Foundation
-
-public protocol Numberic {
+public protocol Numeric {
     
     var int: Int { get }
-    var uint: UInt { get }
+    var uInt: UInt { get }
     
     var double: Double { get }
 }
+
+
+

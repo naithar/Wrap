@@ -147,6 +147,13 @@ public struct Value: Wrappable {
         }
     }
     
+    public var uInt: UInt? {
+        switch self.type {
+        default:
+            return nil
+        }
+    }
+    
     
     public var double: Double? {
         switch self.type {

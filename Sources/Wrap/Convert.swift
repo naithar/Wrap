@@ -18,6 +18,8 @@ public protocol WrapConvertible {
     
     var int: Int? { get }
     
+    var uInt: UInt? { get }
+    
     var double: Double? { get }
     
     var string: String? { get }
