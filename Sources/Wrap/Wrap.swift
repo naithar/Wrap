@@ -26,10 +26,8 @@ public struct Value: Wrappable {
     public init(_ value: Any) {
         self.object = value
     }
-}
-
-extension Value {
     
+
     public fileprivate(set) var object: Any {
         get {
             switch self.type {
@@ -321,10 +319,7 @@ extension Value {
             return (self.object as? T) != nil
         }
     }
-}
 
-extension Value {
-    
     public subscript(key: WrapKeyProtocol) -> Value {
         switch (self.type, key.key) {
         case (.array(let array), .index(let index)):
@@ -333,8 +328,6 @@ extension Value {
         case (.dictionary(let dictionary), .key(let key)):
             guard let value = dictionary[key] else { return .null }
             return Value(value)
-        case (.unknown(let value as WrapSubscriptable), _):
-            return Value(value[key])
         case (.unknown(let value as WrapConvertible), .index(let index)):
             guard let array = value.array,
                 index >= 0 && index < array.count else { return .null }
@@ -342,6 +335,11 @@ extension Value {
         case (.unknown(let value as WrapConvertible), .key(let key)):
             guard let value = value.dictionary?[key] else { return .null }
             return Value(value)
+        case (.unknown(let value as WrapSubscriptable), _):
+            let a = value["a"]
+//            let result = value[key]
+//            return Value(value)//.null
+            return .null
         default:
             return .null
         }
