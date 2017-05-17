@@ -19,4 +19,8 @@ extension Double {
     public var double: Double {
         return self
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }

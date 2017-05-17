@@ -19,4 +19,8 @@ extension Float: Numeric {
     public var double: Double {
         return Double(self)
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }

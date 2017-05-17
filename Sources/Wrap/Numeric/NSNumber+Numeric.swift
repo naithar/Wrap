@@ -21,4 +21,8 @@ extension NSNumber: Numeric {
     public var double: Double {
         return self.doubleValue
     }
+    
+    public var string: String {
+        return self.stringValue
+    }
 }

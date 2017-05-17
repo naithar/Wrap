@@ -12,6 +12,8 @@ public protocol Numeric {
     var uInt: UInt { get }
     
     var double: Double { get }
+    
+    var string: String { get }
 }
 
 

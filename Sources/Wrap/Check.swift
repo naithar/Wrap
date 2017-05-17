@@ -15,6 +15,7 @@ public protocol WrapCheckable {
     var isData: Bool { get }
     var isBool: Bool { get }
     var isInt: Bool { get }
+    var isUInt: Bool { get }
     var isDouble: Bool { get }
     var isString: Bool { get }
     var isArray: Bool { get }

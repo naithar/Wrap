@@ -19,6 +19,10 @@ extension UInt8: Numeric {
     public var double: Double {
         return Double(self)
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }
 
 extension UInt16: Numeric {
@@ -33,6 +37,10 @@ extension UInt16: Numeric {
     
     public var double: Double {
         return Double(self)
+    }
+    
+    public var string: String {
+        return String(describing: self)
     }
 }
 
@@ -49,6 +57,10 @@ extension UInt32: Numeric {
     public var double: Double {
         return Double(self)
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }
 
 extension UInt64: Numeric {
@@ -64,6 +76,10 @@ extension UInt64: Numeric {
     public var double: Double {
         return Double(self)
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }
 
 extension UInt: Numeric {
@@ -78,5 +94,9 @@ extension UInt: Numeric {
     
     public var double: Double {
         return Double(self)
+    }
+    
+    public var string: String {
+        return String(describing: self)
     }
 }

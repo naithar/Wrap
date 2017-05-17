@@ -5,12 +5,11 @@ public protocol Wrappable: WrapConvertible, WrapSubscriptable, WrapCheckable {
 }
 
 public struct Value: Wrappable {
- 
+    
     public enum `Type` {
         case data(Data)
         case bool(Bool)
-        case int(Int)
-        case double(Double)
+        case numeric(Numeric)
         case string(String)
         case array([Any])
         case dictionary([AnyHashable : Any])
@@ -37,10 +36,8 @@ public struct Value: Wrappable {
                 return string
             case .bool(let bool):
                 return bool
-            case .int(let int):
-                return int
-            case .double(let double):
-                return double
+            case .numeric(let number):
+                return number
             case .array(let array):
                 return array
             case .dictionary(let dictionary):
@@ -55,10 +52,8 @@ public struct Value: Wrappable {
                 self.type = .data(data)
             case let string as String:
                 self.type = .string(string)
-            case let int as Int:
-                self.type = .int(int)
-            case let double as Double:
-                self.type = .double(double)
+            case let number as Numeric:
+                self.type = .numeric(number)
             case let bool as Bool:
                 self.type = .bool(bool)
             case let array as [Any]:
@@ -77,10 +72,8 @@ public struct Value: Wrappable {
             return data
         case .string(let string):
             return string.data(using: .utf8)
-        case .int(let int):
-            return String(int).data(using: .utf8)
-        case .double(let double):
-            return String(double).data(using: .utf8)
+        case .numeric(let number):
+            return number.string.data(using: .utf8)
         case .unknown(let value as WrapConvertible):
             return value.data
         default:
@@ -108,10 +101,8 @@ public struct Value: Wrappable {
             }
         case .bool(let value):
             return value
-        case .int(let value):
-            return value != 0
-        case .double(let value):
-            return value != 0
+        case .numeric(let number):
+            return number.int != 0
         case .string(let value):
             switch value.lowercased() {
             case "true":
@@ -119,7 +110,7 @@ public struct Value: Wrappable {
             case "false":
                 return false
             default:
-                return nil
+                return Int(value) != 0
             }
         case .unknown(let value as WrapConvertible):
             return value.bool
@@ -134,10 +125,8 @@ public struct Value: Wrappable {
         case .data(let value):
             guard let string = String(data: value, encoding: .utf8) else { return nil }
             return Int(string)
-        case .int(let value):
-            return value
-        case .double(let value):
-            return Int(value)
+        case .numeric(let number):
+            return number.int
         case .string(let value):
             return Int(value)
         case .unknown(let value as WrapConvertible):
@@ -149,6 +138,15 @@ public struct Value: Wrappable {
     
     public var uInt: UInt? {
         switch self.type {
+        case .data(let value):
+            guard let string = String(data: value, encoding: .utf8) else { return nil }
+            return UInt(string)
+        case .numeric(let number):
+            return number.uInt
+        case .string(let value):
+            return UInt(value)
+        case .unknown(let value as WrapConvertible):
+            return value.uInt
         default:
             return nil
         }
@@ -160,10 +158,8 @@ public struct Value: Wrappable {
         case .data(let value):
             guard let string = String(data: value, encoding: .utf8) else { return nil }
             return Double(string)
-        case .int(let value):
-            return Double(value)
-        case .double(let value):
-            return value
+        case .numeric(let number):
+            return number.double
         case .string(let value):
             return Double(value)
         case .unknown(let value as WrapConvertible):
@@ -180,10 +176,8 @@ public struct Value: Wrappable {
             return String(data: value, encoding: .utf8)
         case .bool(let value):
             return value ? "true" : "false"
-        case .int(let value):
-            return String(value)
-        case .double(let value):
-            return String(value)
+        case .numeric(let number):
+            return number.string
         case .string(let value):
             return value
         case .unknown(let value as WrapConvertible):
@@ -253,7 +247,18 @@ extension Value {
     
     public var isInt: Bool {
         switch self.type {
-        case .int:
+        case .numeric:
+            return true
+        case .unknown(let value as WrapCheckable):
+            return value.isInt
+        default:
+            return false
+        }
+    }
+    
+    public var isUInt: Bool {
+        switch self.type {
+        case .numeric:
             return true
         case .unknown(let value as WrapCheckable):
             return value.isInt
@@ -264,7 +269,7 @@ extension Value {
     
     public var isDouble: Bool {
         switch self.type {
-        case .double:
+        case .numeric:
             return true
         case .unknown(let value as WrapCheckable):
             return value.isDouble
@@ -343,10 +348,7 @@ extension Value {
             guard let value = value.dictionary?[key] else { return .null }
             return Value(value)
         case (.unknown(let value as WrapSubscriptable), _):
-            let a = value["a"]
-//            let result = value[key]
-//            return Value(value)//.null
-            return .null
+            return Value(value.request(key: key))
         default:
             return .null
         }

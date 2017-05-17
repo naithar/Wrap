@@ -20,6 +20,10 @@ extension Int8: Numeric {
     public var double: Double {
         return Double(self)
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }
 
 extension Int16: Numeric {
@@ -35,6 +39,10 @@ extension Int16: Numeric {
     
     public var double: Double {
         return Double(self)
+    }
+    
+    public var string: String {
+        return String(describing: self)
     }
 }
 
@@ -52,6 +60,10 @@ extension Int32: Numeric {
     public var double: Double {
         return Double(self)
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }
 
 extension Int64: Numeric {
@@ -68,6 +80,10 @@ extension Int64: Numeric {
     public var double: Double {
         return Double(self)
     }
+    
+    public var string: String {
+        return String(describing: self)
+    }
 }
 
 extension Int: Numeric {
@@ -83,5 +99,9 @@ extension Int: Numeric {
     
     public var double: Double {
         return Double(self)
+    }
+    
+    public var string: String {
+        return String(describing: self)
     }
 }
