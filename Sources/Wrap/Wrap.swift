@@ -110,7 +110,13 @@ public struct Value: Wrappable {
             case "false":
                 return false
             default:
-                return Int(value) != 0
+                if let int = Int(value) {
+                    return int != 0
+                } else if let double = Double(value) {
+                    return double != 0
+                } else {
+                    return nil
+                }
             }
         case .unknown(let value as WrapConvertible):
             return value.bool

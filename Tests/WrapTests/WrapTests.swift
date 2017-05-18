@@ -19,6 +19,11 @@ class WrapTests: XCTestCase {
         XCTAssertEqual("10", value.string)
         XCTAssertEqual(true, value.bool)
         
+        value = Wrap.Value("sa")
+        
+        XCTAssertEqual("sa", value.string)
+        XCTAssertNil(value.bool)
+        
         value = Wrap.Value([1, 2, 3])
         
         XCTAssertNotNil(value.array)
