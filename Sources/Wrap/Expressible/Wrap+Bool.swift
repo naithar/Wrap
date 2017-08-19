@@ -6,7 +6,7 @@
 //
 //
 
-extension Value: ExpressibleByBooleanLiteral {
+extension Wrap: ExpressibleByBooleanLiteral {
     
     public init(booleanLiteral value: Bool) {
         self.init(value)

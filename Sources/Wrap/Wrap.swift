@@ -4,7 +4,7 @@ public protocol Wrappable: WrapConvertible, WrapSubscriptable, WrapCheckable {
     
 }
 
-public struct Value: Wrappable {
+public struct Wrap: Wrappable {
     
     public enum `Type` {
         case data(Data)
@@ -16,7 +16,7 @@ public struct Value: Wrappable {
         case unknown(Any)
     }
     
-    public static let null = Value()
+    public static let null = Wrap()
     
     fileprivate var type: Type = .unknown(NSNull())
 
@@ -25,7 +25,6 @@ public struct Value: Wrappable {
     public init(_ value: Any) {
         self.object = value
     }
-    
 
     public fileprivate(set) var object: Any {
         get {
@@ -227,7 +226,7 @@ public struct Value: Wrappable {
     }
 }
 
-extension Value {
+extension Wrap {
     
     public var isData: Bool {
         switch self.type {
@@ -338,23 +337,23 @@ extension Value {
         }
     }
 
-    public subscript(key: WrapKeyProtocol) -> Value {
+    public subscript(key: WrapKeyProtocol) -> Wrap {
         switch (self.type, key.key) {
         case (.array(let array), .index(let index)):
             guard index >= 0 && index < array.count else { return .null }
-            return Value(array[index])
+            return Wrap(array[index])
         case (.dictionary(let dictionary), .key(let key)):
             guard let value = dictionary[key] else { return .null }
-            return Value(value)
+            return Wrap(value)
         case (.unknown(let value as WrapConvertible), .index(let index)):
             guard let array = value.array,
                 index >= 0 && index < array.count else { return .null }
-            return Value(array[index])
+            return Wrap(array[index])
         case (.unknown(let value as WrapConvertible), .key(let key)):
             guard let value = value.dictionary?[key] else { return .null }
-            return Value(value)
+            return Wrap(value)
         case (.unknown(let value as WrapSubscriptable), _):
-            return Value(value.request(key: key))
+            return Wrap(value.request(key: key))
         default:
             return .null
         }

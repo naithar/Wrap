@@ -6,7 +6,7 @@
 //
 //
 
-extension Value: ExpressibleByArrayLiteral {
+extension Wrap: ExpressibleByArrayLiteral {
     
     public init(arrayLiteral elements: Any...) {
         self.init(elements)

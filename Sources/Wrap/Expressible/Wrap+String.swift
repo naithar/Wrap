@@ -6,7 +6,7 @@
 //
 //
 
-extension Value: ExpressibleByStringLiteral {
+extension Wrap: ExpressibleByStringLiteral {
     
     public init(stringLiteral value: String) {
         self.init(value)

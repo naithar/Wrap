@@ -6,14 +6,14 @@
 //
 //
 
-extension Value: ExpressibleByIntegerLiteral {
+extension Wrap: ExpressibleByIntegerLiteral {
     
     public init(integerLiteral value: Int) {
         self.init(value)
     }
 }
 
-extension Value: ExpressibleByFloatLiteral {
+extension Wrap: ExpressibleByFloatLiteral {
     
     public init(floatLiteral value: Double) {
         self.init(value)
