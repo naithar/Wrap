@@ -6,7 +6,7 @@
 //
 //
 
-extension Double {
+extension Double: Numeric {
     
     public var int: Int {
         return Int(self)
