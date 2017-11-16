@@ -59,6 +59,27 @@ public struct Wrap: Wrappable {
                 self.type = .array(array)
             case let dictionary as [AnyHashable : Any]:
                 self.type = .dictionary(dictionary)
+            //this numeric checks are for values set using factory initializers
+            case let numeric as Int64:
+                self.type = .numeric(numeric)
+            case let numeric as Int32:
+                self.type = .numeric(numeric)
+            case let numeric as Int16:
+                self.type = .numeric(numeric)
+            case let numeric as Int8:
+                self.type = .numeric(numeric)
+            case let numeric as Int:
+                self.type = .numeric(numeric)
+            case let numeric as UInt64:
+                self.type = .numeric(numeric)
+            case let numeric as UInt32:
+                self.type = .numeric(numeric)
+            case let numeric as UInt16:
+                self.type = .numeric(numeric)
+            case let numeric as UInt8:
+                self.type = .numeric(numeric)
+            case let numeric as UInt:
+                self.type = .numeric(numeric)
             default:
                 self.type = .unknown(object)
             }
